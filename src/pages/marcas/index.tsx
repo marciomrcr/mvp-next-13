@@ -1,22 +1,22 @@
 import Router from 'next/router';
 import { Button } from 'react-bootstrap';
-import ListaCategorias from '../../components/categorias/ListaCategorias';
+import ListaMarcas from '../../components/marcas/ListaMarcas';
 import SideBar from '../../components/SideBar';
 import prisma from '../../lib/prisma';
 
-type Categorias = {
+type Marcas = {
   id: string;
   name: string;
   description: string;
 };
 
 type Props = {
-  categorias: Categorias[];
+  marcas: Marcas[];
 };
 
-function CategoriasPage(props: Props) {
-  function novaCategoria() {
-    Router.push('/categorias/nova');
+function MarcasPage(props: Props) {
+  function novaMarca() {
+    Router.push('/marcas/nova');
   }
 
   return (
@@ -24,27 +24,27 @@ function CategoriasPage(props: Props) {
       <SideBar />
       <div className=' w-4/5 pt-4 pl-4 '>
         <div className='flex justify-between '>
-          <h3>Categorias Cadastradas</h3>
+          <h3>Marcas Cadastradas</h3>
           <Button
-            onClick={() => novaCategoria()}
+            onClick={() => novaMarca()}
             variant='dark'
             size='sm'
             className='mb-2'
           >
-            Nova categoria
+            Nova Marca
           </Button>
         </div>
 
-        <ListaCategorias categorias={props.categorias} />
+        <ListaMarcas marcas={props.marcas} />
       </div>
     </div>
   );
 }
 
-export default CategoriasPage;
+export default MarcasPage;
 
 export const getServerSideProps = async () => {
-  const categorias = await prisma.category.findMany({
+  const marcas = await prisma.brand.findMany({
     select: {
       id: true,
       name: true,
@@ -54,9 +54,9 @@ export const getServerSideProps = async () => {
       name: 'asc',
     },
   });
-  console.log(categorias);
+  console.log(marcas);
 
   return {
-    props: { categorias },
+    props: { marcas },
   };
 };

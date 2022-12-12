@@ -2,28 +2,28 @@ import { useRouter } from 'next/router';
 import { Button, Table } from 'react-bootstrap';
 import api from '../../services/api';
 
-type Categorias = {
+type Marcas = {
   id: string;
   name: string;
   description: string;
 };
 
 type Props = {
-  categorias: Categorias[];
+  marcas: Marcas[];
 };
 
-export default function ListaCategorias(props: Props) {
+export default function ListaMarcas(props: Props) {
   const router = useRouter();
 
-  function editarCategoria(id: string) {
-    router.push(`/categorias/cadastro/${id}`);
+  function editarMarca(id: string) {
+    router.push(`/marcas/cadastro/${id}`);
   }
 
   const handleDelete = async (id: string) => {
-    await api.delete(`/api/categorias/cadastro/${id}`, {
+    await api.delete(`/api/marcas/cadastro/${id}`, {
       method: 'DELETE',
     });
-    router.push('/categorias');
+    router.push('/marcas');
   };
 
   return (
@@ -38,14 +38,14 @@ export default function ListaCategorias(props: Props) {
           </tr>
         </thead>
         <tbody>
-          {props.categorias.map((categoria) => (
-            <tr key={categoria.id}>
-              <td className=''>{categoria.name}</td>
-              <td className=''>{categoria.description}</td>
+          {props.marcas.map((marca) => (
+            <tr key={marca.id}>
+              <td className=''>{marca.name}</td>
+              <td className=''>{marca.description}</td>
 
               <td className='flex justify-center   items-center flex-row '>
                 <Button
-                  onClick={() => editarCategoria(categoria.id)}
+                  onClick={() => editarMarca(marca.id)}
                   className='m-2'
                   size='sm'
                 >
@@ -53,7 +53,7 @@ export default function ListaCategorias(props: Props) {
                 </Button>
                 {''}
                 <Button
-                  onClick={() => handleDelete(categoria.id)}
+                  onClick={() => handleDelete(marca.id)}
                   className='m-2'
                   variant='danger'
                   size='sm'
