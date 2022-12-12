@@ -1,9 +1,8 @@
 import { GetServerSideProps } from 'next';
 import Router from 'next/router';
-import { FormEvent, useState } from 'react';
+import { useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import prisma from '../../../lib/prisma';
-import api from '../../../services/api';
 
 type IReceita = {
   id?: string;
@@ -19,25 +18,8 @@ export default function EditarReceita(props: ReceitaProps) {
   function voltarPagina() {
     Router.push('/receitas');
   }
-  const [id, setId] = useState(props.receita.id);
   const [title, setTitle] = useState(props.receita.title);
   const [description, setDescription] = useState(props.receita.description);
-
-  async function updateReceita(event: FormEvent) {
-    event.preventDefault();
-    try {
-      const response = await api.put(
-        `/api/receitas/cadastro/${props.receita.id}`,
-        { id, title, description }
-      );
-      alert('Receita criada com sucesso');
-      setTitle('');
-      setDescription('');
-    } catch (error) {
-      console.log(error);
-      alert('Deu ruim!!!!!');
-    }
-  }
 
   return (
     <div className='container'>
@@ -55,7 +37,7 @@ export default function EditarReceita(props: ReceitaProps) {
       </div>
       <br />
       <div className='container'>
-        <Form onSubmit={updateReceita}>
+        <Form>
           <Form.Group className='mb-3' controlId='formBasicEmail'>
             <Form.Label>Receita</Form.Label>
             <Form.Control
