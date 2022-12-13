@@ -19,83 +19,105 @@ const Sidebar = () => {
         <p>|</p>
         <p className='text-gray-400 text-lg'>Logo</p>
       </div>
-      <div className='p-4'>
+      <div className='p-3'>
         <div className=''>
-          <h1 className='text-gray-400'>Menu</h1>
+          <h1 className='text-blue-800 lg:text-2xl'>Menu</h1>
           <div className='h-10'>
-            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
-              <DonutLargeIcon className=' text-gray-300' />
-              <p className=' '>Dashboard</p>
-            </div>
+            <Link href={'/'} className='text-decoration-none'>
+              <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
+                <DonutLargeIcon className=' text-gray-300' />
+                <p className=' '>Dashboard</p>
+              </div>
+            </Link>
           </div>
           <div className='h-10'>
-            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
-              <MonetizationOnIcon className='text-gray-300' />
-              <p className='text-gray-600  '>Vendas</p>
-            </div>
+            <Link href={'/vendas'} className='text-decoration-none'>
+              <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
+                <MonetizationOnIcon className='text-gray-300' />
+                <p className='text-gray-600  '>Vendas</p>
+              </div>
+            </Link>
           </div>
 
           <div className='h-10'>
             <Link href={'/receitas'} className='text-decoration-none'>
-              {' '}
               <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
                 <ArrowUpwardIcon className='text-gray-300' />
                 <p className='text-gray-600  '>Receitas</p>
-              </div>{' '}
+              </div>
             </Link>
           </div>
           <div className='h-10'>
-            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
-              <ArrowDownwardIcon className='text-gray-300' />
-              <p className='text-gray-600  '>Despesas</p>
-            </div>
+            <Link href={'/despesas'} className='text-decoration-none'>
+              <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
+                <ArrowDownwardIcon className='text-gray-300' />
+                <p className='text-gray-600  '>Despesas</p>
+              </div>
+            </Link>
           </div>
           <div className='h-10'>
-            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
-              <ShoppingCartIcon className='text-gray-300' />
-              <p className='text-gray-600  '>Compras</p>
-            </div>
+            <Link href={'/compras'} className='text-decoration-none'>
+              <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
+                <ShoppingCartIcon className='text-gray-300' />
+                <p className='text-gray-600  '>Compras</p>
+              </div>
+            </Link>
           </div>
         </div>
-        <div className=''>
-          <h1 className='text-gray-400'>Estoque</h1>
+        <div className='h-18'>
+          <h1 className='text-blue-800 lg:text-2xl mb-0'>Estoque</h1>
+          <div className='h-10 '>
+            <Link href={'/produtos'} className='text-decoration-none'>
+              <div className='flex p-3 text-gray-700   space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer'>
+                <ShoppingBasketIcon className='text-gray-300' />
+                <p className='text-gray-600 '>Produtos</p>
+              </div>
+            </Link>
+          </div>
+
           <div className='h-10'>
-            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer'>
-              <ShoppingBasketIcon className='text-gray-300' />
-              <p className='text-gray-600  '>Produtos</p>
-            </div>
-          </div>
-          <div className=''>
-            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
-              <ReplayCircleFilledIcon className='text-gray-300' />
-              <p className='text-gray-600  '>Estoque</p>
-            </div>
+            <Link href={'/estoque'} className='text-decoration-none'>
+              <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
+                <ReplayCircleFilledIcon className='text-gray-300' />
+                <p className='text-gray-600 text '>Estoque</p>
+              </div>
+            </Link>
           </div>
         </div>
-        <div className=''>
-          <h1 className='text-gray-400'>Cadastros</h1>
-          <div className=''>
-            <div className='h-10 flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
+
+        <h1 className='text-blue-800 lg:text-2xl mb-0'>Cadastros</h1>
+        <div className='h-10'>
+          <Link href={'/clientes'} className='text-decoration-none'>
+            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
               <PersonAddIcon className='text-gray-300' />
               <p className='text-gray-600  '>Clientes</p>
             </div>
-            <div className='h-10 flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
+          </Link>
+        </div>
+
+        <div className='h-10'>
+          <Link href={'/fornecedores'} className='text-decoration-none'>
+            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
               <BusinessIcon className='text-gray-300' />
               <p className='text-gray-600  '>Fornecedores</p>
             </div>
-            <Link href={'/categorias'} className='text-decoration-none'>
-              <div className='h-10 flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
-                <CategoryIcon className='text-gray-300' />
-                <p className='text-gray-600  '>Categorias</p>
-              </div>
-            </Link>
-            <Link href={'/marcas'} className='text-decoration-none'>
-              <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
-                <TaskIcon className='text-gray-300' />
-                <p className='text-gray-600  '>Marcas</p>
-              </div>
-            </Link>
-          </div>
+          </Link>
+        </div>
+        <div className='h-10'>
+          <Link href={'/categorias'} className='text-decoration-none'>
+            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
+              <CategoryIcon className='text-gray-300' />
+              <p className='text-gray-600  '>Categorias</p>
+            </div>
+          </Link>
+        </div>
+        <div className='h-10'>
+          <Link href={'/marcas'} className='text-decoration-none'>
+            <div className='flex p-3 text-gray-700  space-x-2 0 hover:bg-gray-50 hover:text-blue-600  cursor-pointer  '>
+              <TaskIcon className='text-gray-300' />
+              <p className='text-gray-600  '>Marcas</p>
+            </div>
+          </Link>
         </div>
       </div>
     </div>

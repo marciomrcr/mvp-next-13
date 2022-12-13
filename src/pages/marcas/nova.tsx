@@ -14,7 +14,6 @@ type Marca = {
   id?: string;
   name: string;
   description: string;
-  createdAt?: Date;
 };
 
 export default function CadastroMarcas() {

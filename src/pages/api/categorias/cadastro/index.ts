@@ -1,25 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../../lib/prisma';
 
-// export  async function handler(
-//   req: NextApiRequest,
-//   resp: NextApiResponse
-// ) {
-//   const { name, description } = req.body;
-
-//   try {
-//     await prisma.category.create({
-//       data: {
-//         name,
-//         description,
-//       },
-//     });
-//     resp.status(201).json({ Mensagem: 'Categoria salva com sucesso' });
-//   } catch (error) {
-//     console.log('Falhou');
-//   }
-// }
-
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { method, body } = req;
 

@@ -2,73 +2,80 @@ import { useRouter } from 'next/router';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
-type Categoria = {
-  id?: string;
-  name: string;
-  description: string;
-  createdAt?: Date;
+type IReceitas = {
+  receitas: {
+    id?: string;
+    title: string;
+    description?: string;
+  }[];
 };
 
-export default function CadastroCategorias() {
+type Receita = {
+  id?: string;
+  title: string;
+  description: string;
+};
+
+export default function CadastroReceitas() {
   const router = useRouter();
 
   function voltarPagina() {
-    router.push('/categorias');
+    router.push('/receitas');
   }
 
-  const [categoria, setCategoria] = useState({
-    name: '',
+  const [receita, setReceita] = useState({
+    title: '',
     description: '',
   });
 
   const handleChange = ({
     target: { name, value },
   }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-    setCategoria({
-      ...categoria,
+    setReceita({
+      ...receita,
       [name]: value,
     });
 
-  const criarCategoria = async (categoria: Categoria) => {
+  const criarReceita = async (receita: Receita) => {
     try {
-      await fetch(`/api/categorias/cadastro`, {
-        body: JSON.stringify(categoria),
+      await fetch(`/api/receitas/cadastro`, {
+        body: JSON.stringify(receita),
         headers: {
           'Content-Type': 'application/json',
         },
         method: 'POST',
       });
-      return alert('Categoria criada com sucesso');
+      return alert('Receita criada com sucesso');
     } catch (error) {
       console.log(error);
-      alert('Deu ruim');
+      alert('Falha ao cadastrar');
     }
   };
 
-  const loadCategoria = async (id: string) => {
-    const res = await fetch(`/api/categorias/cadastro/${id}`);
-    const categoria = await res.json();
-    setCategoria({ name: categoria.name, description: categoria.description });
+  const loadReceita = async (id: string) => {
+    const res = await fetch(`/api/receitas/cadastro/${id}`);
+    const receita = await res.json();
+    setReceita({ title: receita.title, description: receita.description });
   };
 
-  const updateCategoria = async (id: string, categoria: Categoria) => {
-    await fetch(`/api/categorias/cadastro/${id}`, {
-      body: JSON.stringify(categoria),
+  const updateReceita = async (id: string, receita: Receita) => {
+    await fetch(`/api/receitas/cadastro/${id}`, {
+      body: JSON.stringify(receita),
       headers: {
         'Content-Type': 'application/json',
       },
       method: 'PUT',
     });
-    return alert('Categoria alterada com sucesso');
+    return alert('Receita alterada com sucesso');
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
       if (typeof router.query.id === 'string') {
-        updateCategoria(router.query.id, categoria);
+        updateReceita(router.query.id, receita);
       } else {
-        await criarCategoria(categoria);
+        await criarReceita(receita);
       }
       voltarPagina();
     } catch (error) {
@@ -77,7 +84,7 @@ export default function CadastroCategorias() {
   };
 
   useEffect(() => {
-    if (typeof router.query.id === 'string') loadCategoria(router.query.id);
+    if (typeof router.query.id === 'string') loadReceita(router.query.id);
     console.log(router.query.id);
   }, [router.query]);
 
@@ -85,7 +92,7 @@ export default function CadastroCategorias() {
     <div className='container'>
       <br />
       <div className='flex justify-between flex-row'>
-        <h3>Cadastro de Categoria</h3>
+        <h3>Cadastro de Receita</h3>
         <Button
           onClick={() => voltarPagina()}
           variant='dark'
@@ -99,12 +106,12 @@ export default function CadastroCategorias() {
       <div className='container'>
         <Form onSubmit={handleSubmit}>
           <Form.Group className='mb-3' controlId='formBasicEmail'>
-            <Form.Label>Categoria</Form.Label>
+            <Form.Label>Receita</Form.Label>
             <Form.Control
               type='text'
               placeholder='Digite um nome'
-              name='name'
-              value={categoria.name}
+              name='title'
+              value={receita.title}
               required
               onChange={handleChange}
             />
@@ -118,7 +125,7 @@ export default function CadastroCategorias() {
               required
               placeholder='Descrição da receita'
               name='description'
-              value={categoria.description}
+              value={receita.description}
               onChange={handleChange}
             />
           </Form.Group>

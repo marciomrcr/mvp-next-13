@@ -5,6 +5,24 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { method, body } = req;
 
   switch (method) {
+    case 'GET':
+      const id = req.query.id;
+      try {
+        const despesa = await prisma.expense.findFirst({
+          where: {
+            id: id as string,
+          },
+          select: {
+            id: true,
+            title: true,
+            description: true,
+          },
+        });
+        if (id) return res.json(despesa);
+      } catch (error: any) {
+        return res.status(404).json({ message: 'receita não encontrada' });
+      }
+
     case 'PUT':
       const { title, description } = req.body;
       const despesaId = req.query.id;
@@ -13,7 +31,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       try {
         const despesa = await prisma.expense.update({
           where: {
-            id: despesaId,
+            id: despesaId as string,
           },
           data: {
             title,
@@ -30,11 +48,11 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       try {
         const despesa = await prisma.expense.delete({
           where: {
-            id: Id,
+            id: Id as string,
           },
         });
         if (despesa.id)
-          return res.json(`Despesa: ${despesa.title} foi apagada`);
+          return res.json(`despesa: ${despesa.title} foi apagada`);
       } catch (error: any) {
         return res.status(404).json({ message: 'despesa não encontrada' });
       }
