@@ -34,99 +34,60 @@ model User {
   @@map("usuarios")
 }
 
-model People {
-  id           String @id @default(cuid())
-  peopleTypeId String
-
-  peopleType     PeopleType       @relation(fields: [peopleTypeId], references: [id])
-  PhysicalPerson PhysicalPerson[]
-  LegalPerson    LegalPerson[]
-  Customer       Customer[]
-  Supplier       Supplier[]
-  branchOffice   BranchOffice[]
-  OrderSale      OrderSale[]
-  OrderPurchase  OrderPurchase[]
-
-  @@map("pessoas")
-}
-
-//Física ou Jurídica
-model PeopleType {
-  id          String   @id @default(cuid())
-  description String   @unique
-  People      People[]
-}
-
 //Filial
 model BranchOffice {
-  branchOfficeId String
-
-  people        People          @relation(fields: [branchOfficeId], references: [id])
+  id            String          @id @default(cuid())
+  legalPersonId String
   Stock         Stock[]
   stockMovement stockMovement[]
   OrderSale     OrderSale[]
   OrderPurchase OrderPurchase[]
 
-  @@id([branchOfficeId])
+  legalPerson LegalPerson @relation(fields: [legalPersonId], references: [id])
+
   @@map("filial")
 }
 
 //Conusumidor ou Fornecedor
 
-model Supplier {
-  supplierId String
-
-  people People @relation(fields: [supplierId], references: [id])
-
-  @@id([supplierId])
-  @@map("fornecedor")
-}
-
-model Customer {
-  customerId String
-  people     People @relation(fields: [customerId], references: [id])
-
-  @@id([customerId])
-  @@map("consumidor")
-}
-
 model PhysicalPerson {
-  physicalPersonId String
-  name             String    @unique
-  cpf              String?   @db.Char(11)
-  identity         String?   @db.Char(10)
-  birthDate        DateTime? @db.Date
-  whatsApp         String    @unique @db.Char(11)
-  status           Status    @default(Ativo)
-  creditLimit      Decimal   @db.Decimal(7, 2)
-  createdAt        DateTime  @default(now())
-  updateddAt       DateTime  @updatedAt
-  people           People    @relation(fields: [physicalPersonId], references: [id])
+  id          String    @id @default(cuid())
+  name        String    @unique
+  cpf         String?   @db.Char(11)
+  identity    String?   @db.Char(10)
+  birthDate   DateTime?
+  whatsApp    String?   @unique @db.Char(11)
+  phone       String    @unique @db.Char(11)
+  status      Status    @default(Ativo)
+  isSuplier   Boolean   @default(false)
+  creditLimit Decimal?  @db.Decimal(7, 2)
+  createdAt   DateTime  @default(now())
+  updateddAt  DateTime  @updatedAt
 
-  @@id([physicalPersonId])
   @@index([name])
   @@map("pessoa_fisica")
 }
 
 model LegalPerson {
-  legalPersonId     String
-  name              String   @unique
+  id                String         @id @default(cuid())
+  name              String         @unique
   contactName       String?
-  cnpj              String?  @unique @db.Char(14)
-  whatsApp          String?  @unique
-  email             String   @unique
-  instagram         String?  @unique
-  stateRegistration String?  @unique @db.Char(14)
-  foundingDate      DateTime @db.Date
-  pixkey            String?  @unique
-  creditLimit       Decimal  @db.Decimal(7, 2)
-  createdAt         DateTime @default(now())
-  updateddAt        DateTime @updatedAt
-  status            Status   @default(Ativo)
+  cnpj              String?        @unique @db.Char(14)
+  whatsApp          String?        @unique
+  phone             String?        @unique
+  email             String         @unique
+  instagram         String?        @unique
+  stateRegistration String?        @unique @db.Char(14)
+  foundingDate      DateTime?
+  pixkey            String?        @unique
+  creditLimit       Decimal?       @db.Decimal(7, 2)
+  isSuplier         Boolean        @default(true)
+  status            Boolean        @default(true)
+  isCustomer        Boolean        @default(false)
+  createdAt         DateTime       @default(now())
+  updateddAt        DateTime       @updatedAt
+  BranchOffice      BranchOffice[]
 
-  people People @relation(fields: [legalPersonId], references: [id])
-
-  @@id([legalPersonId])
   @@index([name])
   @@map("pessoa_juridica")
 }
@@ -192,7 +153,7 @@ model Stock {
   updateddAt     DateTime @updatedAt
 
   product       Product         @relation(fields: [productId], references: [id])
-  branchOffice  BranchOffice    @relation(fields: [branchOfficeId], references: [branchOfficeId])
+  branchOffice  BranchOffice    @relation(fields: [branchOfficeId], references: [id])
   ReservedStock ReservedStock[]
 
   @@id([branchOfficeId, productId])
@@ -221,7 +182,7 @@ model stockMovement {
   createdAt      DateTime @default(now())
   updateddAt     DateTime @updatedAt
 
-  branchOffice BranchOffice @relation(fields: [branchOfficeId], references: [branchOfficeId])
+  branchOffice BranchOffice @relation(fields: [branchOfficeId], references: [id])
   product      Product      @relation(fields: [productId], references: [id])
 
   @@map("movimento_estoque")
@@ -257,10 +218,9 @@ model OrderSale {
   createdAt         DateTime @default(now())
   updateddAt        DateTime @updatedAt
 
-  branchOffice    BranchOffice     @relation(fields: [branchOfficeId], references: [branchOfficeId])
+  branchOffice    BranchOffice     @relation(fields: [branchOfficeId], references: [id])
   operation       Operation        @relation(fields: [operationId], references: [id])
   operationStatus OperationStatus  @relation(fields: [operationStatusId], references: [id])
-  people          People           @relation(fields: [peopleId], references: [id])
   OrderSaleItems  OrderSaleItems[]
 
   @@map("venda")
@@ -275,10 +235,9 @@ model OrderPurchase {
   createdAt         DateTime @default(now())
   updateddAt        DateTime @updatedAt
 
-  branchOffice    BranchOffice    @relation(fields: [branchOfficeId], references: [branchOfficeId])
+  branchOffice    BranchOffice    @relation(fields: [branchOfficeId], references: [id])
   operation       Operation       @relation(fields: [operationId], references: [id])
   operationStatus OperationStatus @relation(fields: [operationStatusId], references: [id])
-  people          People          @relation(fields: [peopleId], references: [id])
 
   @@map("pedido_compra")
 }

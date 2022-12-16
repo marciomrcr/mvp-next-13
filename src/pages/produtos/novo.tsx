@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
+import prisma from '../../lib/prisma';
 
 type Produto = {
   id?: string;
@@ -31,7 +32,7 @@ export default function CadastroProdutos() {
 
   const handleChange = ({
     target: { name, value },
-  }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+  }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) =>
     setProduto({
       ...produto,
       [name]: value,
@@ -113,7 +114,7 @@ export default function CadastroProdutos() {
       <br />
       <div className='container'>
         <Form onSubmit={handleSubmit}>
-          <Form.Group className='mb-2' controlId='formBasicEmail'>
+          <Form.Group className='mb-2' controlId='formNome'>
             <Form.Label>Produto</Form.Label>
             <Form.Control
               size='sm'
@@ -127,7 +128,7 @@ export default function CadastroProdutos() {
 
             {/* <Form.Text className='text-muted'>Campo obrigatório.</Form.Text> */}
           </Form.Group>
-          <Form.Group className='mb-2' controlId='formBasicPassword'>
+          <Form.Group className='mb-2' controlId='formDescription'>
             <Form.Label>Descrição</Form.Label>
             <Form.Control
               size='sm'
@@ -138,7 +139,8 @@ export default function CadastroProdutos() {
               onChange={handleChange}
             />
           </Form.Group>
-          <Form.Group className='mb-2' controlId='formBasicEmail'>
+
+          <Form.Group className='mb-2' controlId='formCategoria'>
             <Form.Label>Categoria</Form.Label>
             <Form.Control
               size='sm'
@@ -149,10 +151,8 @@ export default function CadastroProdutos() {
               required
               onChange={handleChange}
             />
-
-            {/* <Form.Text className='text-muted'>Campo obrigatório.</Form.Text> */}
           </Form.Group>
-          <Form.Group className='mb-2' controlId='formBasicEmail'>
+          <Form.Group className='mb-2' controlId='formMarca'>
             <Form.Label>Marca</Form.Label>
             <Form.Control
               size='sm'
@@ -208,3 +208,20 @@ export default function CadastroProdutos() {
     </div>
   );
 }
+
+export const getServerSideProps = async () => {
+  const categorias = await prisma.category.findMany({
+    select: {
+      id: true,
+      name: true,
+    },
+    orderBy: {
+      name: 'asc',
+    },
+  });
+  console.log(categorias);
+
+  return {
+    props: { categorias },
+  };
+};

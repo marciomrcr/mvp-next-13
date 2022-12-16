@@ -2,14 +2,6 @@ import { useRouter } from 'next/router';
 import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 
-type IMarcas = {
-  marcas: {
-    id?: string;
-    name: string;
-    description?: string;
-  }[];
-};
-
 type Marca = {
   id?: string;
   name: string;
