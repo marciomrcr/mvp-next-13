@@ -36,3 +36,39 @@ export type Produtos = {
   colors?: string;
   price?: string;
 };
+
+export type Estoque = {
+  id?: string;
+  product?: {
+    name: string;
+  };
+  productId: string;
+  amount: number;
+  min_stock?: number;
+};
+
+export type Receitas = {
+  id: string;
+  title: string;
+  description: string;
+};
+
+export type ItemVenda = {
+  orderSaleId: string;
+  productId: string;
+  mount: number;
+  unitPrice: number;
+  discount: number;
+  sum_total: number;
+};
+export type Venda = {
+  id?: string;
+  physicalPerson?: { name: string };
+  product?: { name: string };
+  physicalPersonId: string;
+  productId: string;
+  amount: string;
+  unitPrice: string;
+  discount?: string;
+  totalPrice: string;
+};

@@ -114,7 +114,6 @@ export default function CadastroCategorias() {
           <Form.Group className='mb-3' controlId='formBasicPassword'>
             <Form.Label>Descrição</Form.Label>
             <Form.Control
-              as='textarea'
               required
               placeholder='Descrição da receita'
               name='description'

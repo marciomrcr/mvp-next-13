@@ -97,7 +97,7 @@ export default function CadastroMarcas() {
       <br />
       <div className='container'>
         <Form onSubmit={handleSubmit}>
-          <Form.Group className='mb-3' controlId='formBasicEmail'>
+          <Form.Group className='mb-3 focus: ' controlId='name'>
             <Form.Label>Marca</Form.Label>
             <Form.Control
               type='text'
@@ -113,7 +113,6 @@ export default function CadastroMarcas() {
           <Form.Group className='mb-3' controlId='formBasicPassword'>
             <Form.Label>Descrição</Form.Label>
             <Form.Control
-              as='textarea'
               required
               placeholder='Descrição da receita'
               name='description'

@@ -30,7 +30,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const { name, phone, cpf, identity, whatsApp, creditLimit } = req.body;
 
       try {
-        await prisma.physicalPerson.create({
+        const cliente = await prisma.physicalPerson.create({
           data: {
             name,
             phone,
@@ -40,7 +40,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             creditLimit,
           },
         });
-        res.status(201).json({ Mensagem: 'Cliente salvo com sucesso' });
+        res.status(201).json(cliente);
       } catch (error) {
         console.log('Falha ao salvar');
       }

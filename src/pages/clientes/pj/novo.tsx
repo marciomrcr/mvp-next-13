@@ -22,7 +22,7 @@ export default function CadastroClientesPJ() {
       <SideBar />
       <div className='w-4/5 pt-4 pl-4 bg-gray-200 '>
         <div className='flex justify-center gap-10 '>
-          <h3>Cadastro de Clientes - PJ</h3>
+          <h3>Cadastro de Fornecedores - PJ</h3>
           <Button
             onClick={() => listaPJ()}
             variant='dark'

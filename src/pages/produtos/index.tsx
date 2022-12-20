@@ -25,7 +25,7 @@ function ProdutosPage(props: Props) {
   }
 
   return (
-    <div className='flex'>
+    <div className='flex bg-gray-200'>
       <SideBar />
       <div className=' w-4/5 pt-4 pl-4 '>
         <div className='flex justify-between '>

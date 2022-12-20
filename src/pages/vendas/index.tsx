@@ -1,17 +1,17 @@
 import Router from 'next/router';
 import { Button } from 'react-bootstrap';
-import ListaEstoque from '../../components/estoque/ListaEstoque';
 import SideBar from '../../components/SideBar';
+import ListaVendas from '../../components/vendas/ListaVendas';
 import prisma from '../../lib/prisma';
-import { Estoque } from '../../types';
+import { Venda } from '../../types';
 
 type Props = {
-  estoque: Estoque[];
+  vendas: Venda[];
 };
 
-function EstoquePage(props: Props) {
-  function novoEstoque() {
-    Router.push('/estoque/novo');
+function ProdutosPage(props: Props) {
+  function novaVenda() {
+    Router.push('/vendas/nova');
   }
 
   return (
@@ -19,45 +19,48 @@ function EstoquePage(props: Props) {
       <SideBar />
       <div className=' w-4/5 pt-4 pl-4 '>
         <div className='flex justify-between '>
-          <h3>Estoque de Produtos</h3>
+          <h3>Vendas Realizadas</h3>
           <Button
-            onClick={() => novoEstoque()}
+            onClick={() => novaVenda()}
             variant='dark'
             size='sm'
             className='mb-2'
           >
-            Nova Entrada
+            Nova Venda
           </Button>
         </div>
-        <ListaEstoque estoque={props.estoque} />
+
+        <ListaVendas vendas={props.vendas} />
       </div>
     </div>
   );
 }
 
-export default EstoquePage;
+export default ProdutosPage;
 
 export const getServerSideProps = async () => {
-  const estoque = await prisma.stock.findMany({
+  const vendas = await prisma.orderSale.findMany({
     select: {
       id: true,
+      physicalPerson: {
+        select: {
+          name: true,
+        },
+      },
       product: {
         select: {
           name: true,
         },
       },
       amount: true,
-      min_stock: true,
-    },
-    orderBy: {
-      product: {
-        name: 'asc',
-      },
+      unitPrice: true,
+      discount: true,
+      totalPrice: true,
     },
   });
-  console.log(estoque);
+  console.log(vendas);
 
   return {
-    props: { estoque },
+    props: { vendas },
   };
 };

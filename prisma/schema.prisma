@@ -35,58 +35,46 @@ model User {
 }
 
 //Filial
-model BranchOffice {
-  id            String          @id @default(cuid())
-  legalPersonId String
-  Stock         Stock[]
-  stockMovement stockMovement[]
-  OrderSale     OrderSale[]
-  OrderPurchase OrderPurchase[]
-
-  legalPerson LegalPerson @relation(fields: [legalPersonId], references: [id])
-
-  @@map("filial")
-}
 
 //Conusumidor ou Fornecedor
 
 model PhysicalPerson {
-  id          String    @id @default(cuid())
-  name        String    @unique
-  cpf         String?   @db.Char(11)
-  identity    String?   @db.Char(10)
+  id          String      @id @default(cuid())
+  name        String      @unique
+  cpf         String?     @db.Char(11)
+  identity    String?     @db.Char(10)
   birthDate   DateTime?
-  whatsApp    String?   @unique @db.Char(11)
-  phone       String    @unique @db.Char(11)
-  status      Status    @default(Ativo)
-  isSuplier   Boolean   @default(false)
-  creditLimit Decimal?  @db.Decimal(7, 2)
-  createdAt   DateTime  @default(now())
-  updateddAt  DateTime  @updatedAt
+  whatsApp    String?     @unique @db.Char(11)
+  phone       String      @unique @db.Char(11)
+  status      Status      @default(Ativo)
+  isSuplier   Boolean     @default(false)
+  creditLimit Decimal?    @db.Decimal(7, 2)
+  createdAt   DateTime    @default(now())
+  updateddAt  DateTime    @updatedAt
+  OrderSale   OrderSale[]
 
   @@index([name])
   @@map("pessoa_fisica")
 }
 
 model LegalPerson {
-  id                String         @id @default(cuid())
-  name              String         @unique
+  id                String    @id @default(cuid())
+  name              String    @unique
   contactName       String?
-  cnpj              String?        @unique @db.Char(14)
-  whatsApp          String?        @unique
-  phone             String?        @unique
-  email             String         @unique
-  instagram         String?        @unique
-  stateRegistration String?        @unique @db.Char(14)
+  cnpj              String?   @unique @db.Char(14)
+  whatsApp          String?   @unique
+  phone             String?   @unique
+  email             String    @unique
+  instagram         String?   @unique
+  stateRegistration String?   @unique @db.Char(14)
   foundingDate      DateTime?
-  pixkey            String?        @unique
-  creditLimit       Decimal?       @db.Decimal(7, 2)
-  isSuplier         Boolean        @default(true)
-  status            Boolean        @default(true)
-  isCustomer        Boolean        @default(false)
-  createdAt         DateTime       @default(now())
-  updateddAt        DateTime       @updatedAt
-  BranchOffice      BranchOffice[]
+  pixkey            String?   @unique
+  creditLimit       Decimal?  @db.Decimal(7, 2)
+  isSuplier         Boolean   @default(true)
+  status            Boolean   @default(true)
+  isCustomer        Boolean   @default(false)
+  createdAt         DateTime  @default(now())
+  updateddAt        DateTime  @updatedAt
 
   @@index([name])
   @@map("pessoa_juridica")
@@ -131,59 +119,53 @@ model Product {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  productStock   Stock[]
-  Brand          Brand?           @relation(fields: [brand], references: [name])
-  Category       Category         @relation(fields: [category], references: [name])
-  stockMovement  stockMovement[]
-  OrderSaleItems OrderSaleItems[]
-  PriceSale      PriceSale[]
-  PricePurchase  PricePurchase[]
-  //purchasedItems purchasedItems[]
+  Brand         Brand?          @relation(fields: [brand], references: [name])
+  Category      Category        @relation(fields: [category], references: [name])
+  stockMovement stockMovement[]
+  PriceSale     PriceSale[]
+  PricePurchase PricePurchase[]
+  ReservedStock ReservedStock[]
+  Stock         Stock[]
+  OrderSale     OrderSale[]
 
   @@index([name])
   @@map("produtos")
 }
 
 model Stock {
-  branchOfficeId String
-  productId      String
-  amount         Int
-  min_stock      Int?
-  createdAt      DateTime @default(now())
-  updateddAt     DateTime @updatedAt
+  id         String   @id @default(cuid())
+  productId  String   @unique
+  amount     Int
+  min_stock  Int?
+  createdAt  DateTime @default(now())
+  updateddAt DateTime @updatedAt
 
-  product       Product         @relation(fields: [productId], references: [id])
-  branchOffice  BranchOffice    @relation(fields: [branchOfficeId], references: [id])
-  ReservedStock ReservedStock[]
+  product Product @relation(fields: [productId], references: [id])
 
-  @@id([branchOfficeId, productId])
   @@map("estoque")
 }
 
 model ReservedStock {
-  branchOfficeId String
-  productId      String
-
+  id         String   @id @default(cuid())
+  productId  String
+  customer   String
   amount     Int
   createdAt  DateTime @default(now())
   updateddAt DateTime @updatedAt
-  stock      Stock    @relation(fields: [branchOfficeId, productId], references: [branchOfficeId, productId])
+  product    Product  @relation(fields: [productId], references: [id])
 
-  @@id([branchOfficeId, productId])
   @@map("estoque_reservado")
 }
 
 model stockMovement {
-  id             String   @id @default(cuid())
-  branchOfficeId String
-  productId      String
-  entryOutput    String   @db.Char(1)
-  amount         Int
-  createdAt      DateTime @default(now())
-  updateddAt     DateTime @updatedAt
+  id          String   @id @default(cuid())
+  productId   String
+  entryOutput String   @db.Char(1)
+  amount      Int
+  createdAt   DateTime @default(now())
+  updateddAt  DateTime @updatedAt
 
-  branchOffice BranchOffice @relation(fields: [branchOfficeId], references: [id])
-  product      Product      @relation(fields: [productId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
 
   @@map("movimento_estoque")
 }
@@ -192,7 +174,6 @@ model stockMovement {
 model Operation {
   id            String          @id @default(cuid())
   title         String          @unique
-  Order         OrderSale[]
   OrderPurchase OrderPurchase[]
 
   @@index([title])
@@ -203,25 +184,23 @@ model Operation {
 model OperationStatus {
   id            String          @id @default(cuid())
   description   String
-  Order         OrderSale[]
   OrderPurchase OrderPurchase[]
 
   @@map("status_venda")
 }
 
 model OrderSale {
-  id                String   @id @default(cuid())
-  operationId       String
-  operationStatusId String
-  branchOfficeId    String
-  peopleId          String
-  createdAt         DateTime @default(now())
-  updateddAt        DateTime @updatedAt
-
-  branchOffice    BranchOffice     @relation(fields: [branchOfficeId], references: [id])
-  operation       Operation        @relation(fields: [operationId], references: [id])
-  operationStatus OperationStatus  @relation(fields: [operationStatusId], references: [id])
-  OrderSaleItems  OrderSaleItems[]
+  id               String         @id @default(cuid())
+  physicalPersonId String
+  productId        String
+  amount           String
+  unitPrice        String
+  discount         String
+  totalPrice       String
+  createdAt        DateTime       @default(now())
+  updateddAt       DateTime       @updatedAt
+  product          Product        @relation(fields: [productId], references: [id])
+  physicalPerson   PhysicalPerson @relation(fields: [physicalPersonId], references: [id])
 
   @@map("venda")
 }
@@ -230,46 +209,28 @@ model OrderPurchase {
   id                String   @id @default(cuid())
   operationId       String
   operationStatusId String
-  branchOfficeId    String
   peopleId          String
   createdAt         DateTime @default(now())
   updateddAt        DateTime @updatedAt
 
-  branchOffice    BranchOffice    @relation(fields: [branchOfficeId], references: [id])
   operation       Operation       @relation(fields: [operationId], references: [id])
   operationStatus OperationStatus @relation(fields: [operationStatusId], references: [id])
 
   @@map("pedido_compra")
 }
 
-model OrderSaleItems {
-  orderSaleId String
-  productId   String
-  mount       Int
-  unitPrice   Decimal @db.Decimal(7, 2)
-  discount    Decimal @default(0) @db.Decimal(7, 2)
-  sum_total   Decimal @db.Decimal(7, 2)
+// model OrderSaleItems {
+//   id          String    @id @default(cuid())
+//   orderSaleId String
+//   productId   String
+//   mount       String
+//   unitPrice   String
+//   discount    String
+//   sum_total   String
+//   product     Product   @relation(fields: [productId], references: [id])
+//   orderSale   OrderSale @relation(fields: [orderSaleId], references: [id])
 
-  OrderSale OrderSale @relation(fields: [orderSaleId], references: [id])
-  product   Product   @relation(fields: [productId], references: [id])
-
-  @@id([orderSaleId, productId])
-  @@map("iten_Pedido_venda")
-}
-
-// model purchasedItems {
-//   purchaseId String
-//   productId  String
-//   mount      Int
-//   unitPrice  Decimal  @db.Decimal(7, 2)
-//   discount   Decimal  @db.Decimal(7, 2)
-//   sum_total  Decimal  @db.Decimal(7, 2)
-//   barCode    String?  @unique
-//   purchase   Purchase @relation(fields: [purchaseId], references: [id])
-//   product    Product  @relation(fields: [productId], references: [id])
-
-//   @@id([purchaseId, productId])
-//   @@map("itens_comprados")
+//   @@map("iten_Pedido_venda")
 // }
 
 model PriceSale {
@@ -293,16 +254,6 @@ model PricePurchase {
   @@id([productId])
   @@map("precoCompra")
 }
-
-// model Purchase {
-//   id               String           @id @default(cuid())
-//   deliveryForecast DateTime         @db.Date
-//   createdAt        DateTime         @default(now())
-//   updatedAt        DateTime         @updatedAt
-//   purchasedItems   purchasedItems[]
-
-//   @@map("compras")
-// }
 
 model Income {
   id          String   @id @default(cuid())

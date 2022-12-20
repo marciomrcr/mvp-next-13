@@ -6,12 +6,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   switch (method) {
     case 'GET':
-      const id = req.query.id;
       try {
-        const produto = await prisma.product.findFirst({
-          where: {
-            id: id as string,
-          },
+        const produto = await prisma.product.findMany({
           select: {
             name: true,
             description: true,
@@ -21,7 +17,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             colors: true,
           },
         });
-        if (id) return res.json(`Produto: ${produto?.name}`);
+
+        return res.json(produto);
       } catch (error: any) {
         return res.status(404).json({ message: 'Produto não encontrada' });
       }
@@ -30,7 +27,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       const { name, description, category, brand, size, colors } = req.body;
 
       try {
-        await prisma.product.create({
+        const produto = await prisma.product.create({
           data: {
             name,
             description,
@@ -40,7 +37,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             colors,
           },
         });
-        res.status(201).json({ Mensagem: 'Produto salvo com sucesso' });
+        res.status(201).json({ produto });
       } catch (error) {
         console.log('Falha ao cadastrar');
       }

@@ -18,76 +18,44 @@ CREATE TABLE "usuarios" (
 );
 
 -- CreateTable
-CREATE TABLE "pessoas" (
-    "id" TEXT NOT NULL,
-    "peopleTypeId" TEXT NOT NULL,
-
-    CONSTRAINT "pessoas_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "PeopleType" (
-    "id" TEXT NOT NULL,
-    "description" TEXT NOT NULL,
-
-    CONSTRAINT "PeopleType_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "filial" (
-    "branchOfficeId" TEXT NOT NULL,
-
-    CONSTRAINT "filial_pkey" PRIMARY KEY ("branchOfficeId")
-);
-
--- CreateTable
-CREATE TABLE "fornecedor" (
-    "supplierId" TEXT NOT NULL,
-
-    CONSTRAINT "fornecedor_pkey" PRIMARY KEY ("supplierId")
-);
-
--- CreateTable
-CREATE TABLE "consumidor" (
-    "customerId" TEXT NOT NULL,
-
-    CONSTRAINT "consumidor_pkey" PRIMARY KEY ("customerId")
-);
-
--- CreateTable
 CREATE TABLE "pessoa_fisica" (
-    "physicalPersonId" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "cpf" CHAR(11),
     "identity" CHAR(10),
-    "birthDate" DATE,
-    "whatsApp" CHAR(11) NOT NULL,
+    "birthDate" TIMESTAMP(3),
+    "whatsApp" CHAR(11),
+    "phone" CHAR(11) NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'Ativo',
-    "creditLimit" DECIMAL(7,2) NOT NULL,
+    "isSuplier" BOOLEAN NOT NULL DEFAULT false,
+    "creditLimit" DECIMAL(7,2),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateddAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "pessoa_fisica_pkey" PRIMARY KEY ("physicalPersonId")
+    CONSTRAINT "pessoa_fisica_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "pessoa_juridica" (
-    "legalPersonId" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "contactName" TEXT,
     "cnpj" CHAR(14),
     "whatsApp" TEXT,
+    "phone" TEXT,
     "email" TEXT NOT NULL,
     "instagram" TEXT,
     "stateRegistration" CHAR(14),
-    "foundingDate" DATE NOT NULL,
+    "foundingDate" TIMESTAMP(3),
     "pixkey" TEXT,
-    "creditLimit" DECIMAL(7,2) NOT NULL,
+    "creditLimit" DECIMAL(7,2),
+    "isSuplier" BOOLEAN NOT NULL DEFAULT true,
+    "status" BOOLEAN NOT NULL DEFAULT true,
+    "isCustomer" BOOLEAN NOT NULL DEFAULT false,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateddAt" TIMESTAMP(3) NOT NULL,
-    "status" "Status" NOT NULL DEFAULT 'Ativo',
 
-    CONSTRAINT "pessoa_juridica_pkey" PRIMARY KEY ("legalPersonId")
+    CONSTRAINT "pessoa_juridica_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -118,12 +86,12 @@ CREATE TABLE "categorias" (
 -- CreateTable
 CREATE TABLE "produtos" (
     "id" TEXT NOT NULL,
-    "categoryId" TEXT NOT NULL,
-    "brandId" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT,
     "size" TEXT,
     "colors" TEXT,
+    "brand" TEXT,
+    "category" TEXT NOT NULL,
     "status" "Status" NOT NULL DEFAULT 'Ativo',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
@@ -133,31 +101,31 @@ CREATE TABLE "produtos" (
 
 -- CreateTable
 CREATE TABLE "estoque" (
-    "branchOfficeId" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
     "amount" INTEGER NOT NULL,
     "min_stock" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateddAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "estoque_pkey" PRIMARY KEY ("branchOfficeId","productId")
+    CONSTRAINT "estoque_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "estoque_reservado" (
-    "branchOfficeId" TEXT NOT NULL,
+    "id" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
+    "customer" TEXT NOT NULL,
     "amount" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateddAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "estoque_reservado_pkey" PRIMARY KEY ("branchOfficeId","productId")
+    CONSTRAINT "estoque_reservado_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
 CREATE TABLE "movimento_estoque" (
     "id" TEXT NOT NULL,
-    "branchOfficeId" TEXT NOT NULL,
     "productId" TEXT NOT NULL,
     "entryOutput" CHAR(1) NOT NULL,
     "amount" INTEGER NOT NULL,
@@ -186,10 +154,12 @@ CREATE TABLE "status_venda" (
 -- CreateTable
 CREATE TABLE "venda" (
     "id" TEXT NOT NULL,
-    "operationId" TEXT NOT NULL,
-    "operationStatusId" TEXT NOT NULL,
-    "branchOfficeId" TEXT NOT NULL,
-    "peopleId" TEXT NOT NULL,
+    "physicalPersonId" TEXT NOT NULL,
+    "productId" TEXT NOT NULL,
+    "amount" TEXT NOT NULL,
+    "unitPrice" TEXT NOT NULL,
+    "discount" TEXT NOT NULL,
+    "totalPrice" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateddAt" TIMESTAMP(3) NOT NULL,
 
@@ -201,7 +171,6 @@ CREATE TABLE "pedido_compra" (
     "id" TEXT NOT NULL,
     "operationId" TEXT NOT NULL,
     "operationStatusId" TEXT NOT NULL,
-    "branchOfficeId" TEXT NOT NULL,
     "peopleId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updateddAt" TIMESTAMP(3) NOT NULL,
@@ -210,26 +179,23 @@ CREATE TABLE "pedido_compra" (
 );
 
 -- CreateTable
-CREATE TABLE "iten_Pedido_venda" (
-    "orderSaleId" TEXT NOT NULL,
+CREATE TABLE "precoVenda" (
     "productId" TEXT NOT NULL,
-    "mount" INTEGER NOT NULL,
-    "unitPrice" DECIMAL(7,2) NOT NULL,
-    "discount" DECIMAL(7,2) NOT NULL DEFAULT 0,
-    "sum_total" DECIMAL(7,2) NOT NULL,
-
-    CONSTRAINT "iten_Pedido_venda_pkey" PRIMARY KEY ("orderSaleId","productId")
-);
-
--- CreateTable
-CREATE TABLE "precos" (
-    "productId" TEXT NOT NULL,
-    "PurchasePrice" DECIMAL(7,2) NOT NULL,
-    "saleprice" DECIMAL(7,2) NOT NULL,
+    "salePrice" DECIMAL(7,2) NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
-    CONSTRAINT "precos_pkey" PRIMARY KEY ("productId")
+    CONSTRAINT "precoVenda_pkey" PRIMARY KEY ("productId")
+);
+
+-- CreateTable
+CREATE TABLE "precoCompra" (
+    "productId" TEXT NOT NULL,
+    "purchasePrice" DECIMAL(7,2) NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "precoCompra_pkey" PRIMARY KEY ("productId")
 );
 
 -- CreateTable
@@ -263,13 +229,13 @@ CREATE UNIQUE INDEX "usuarios_email_key" ON "usuarios"("email");
 CREATE INDEX "usuarios_name_idx" ON "usuarios"("name");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "PeopleType_description_key" ON "PeopleType"("description");
-
--- CreateIndex
 CREATE UNIQUE INDEX "pessoa_fisica_name_key" ON "pessoa_fisica"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "pessoa_fisica_whatsApp_key" ON "pessoa_fisica"("whatsApp");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "pessoa_fisica_phone_key" ON "pessoa_fisica"("phone");
 
 -- CreateIndex
 CREATE INDEX "pessoa_fisica_name_idx" ON "pessoa_fisica"("name");
@@ -282,6 +248,9 @@ CREATE UNIQUE INDEX "pessoa_juridica_cnpj_key" ON "pessoa_juridica"("cnpj");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "pessoa_juridica_whatsApp_key" ON "pessoa_juridica"("whatsApp");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "pessoa_juridica_phone_key" ON "pessoa_juridica"("phone");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "pessoa_juridica_email_key" ON "pessoa_juridica"("email");
@@ -308,10 +277,16 @@ CREATE INDEX "marcas_name_idx" ON "marcas"("name");
 CREATE UNIQUE INDEX "categorias_name_key" ON "categorias"("name");
 
 -- CreateIndex
+CREATE INDEX "categorias_name_idx" ON "categorias"("name");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "produtos_name_key" ON "produtos"("name");
 
 -- CreateIndex
 CREATE INDEX "produtos_name_idx" ON "produtos"("name");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "estoque_productId_key" ON "estoque"("productId");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "operacoes_title_key" ON "operacoes"("title");
@@ -332,58 +307,25 @@ CREATE UNIQUE INDEX "despesas_title_key" ON "despesas"("title");
 CREATE INDEX "despesas_title_idx" ON "despesas"("title");
 
 -- AddForeignKey
-ALTER TABLE "pessoas" ADD CONSTRAINT "pessoas_peopleTypeId_fkey" FOREIGN KEY ("peopleTypeId") REFERENCES "PeopleType"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "produtos" ADD CONSTRAINT "produtos_brand_fkey" FOREIGN KEY ("brand") REFERENCES "marcas"("name") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "filial" ADD CONSTRAINT "filial_branchOfficeId_fkey" FOREIGN KEY ("branchOfficeId") REFERENCES "pessoas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "fornecedor" ADD CONSTRAINT "fornecedor_supplierId_fkey" FOREIGN KEY ("supplierId") REFERENCES "pessoas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "consumidor" ADD CONSTRAINT "consumidor_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "pessoas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "pessoa_fisica" ADD CONSTRAINT "pessoa_fisica_physicalPersonId_fkey" FOREIGN KEY ("physicalPersonId") REFERENCES "pessoas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "pessoa_juridica" ADD CONSTRAINT "pessoa_juridica_legalPersonId_fkey" FOREIGN KEY ("legalPersonId") REFERENCES "pessoas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "produtos" ADD CONSTRAINT "produtos_brandId_fkey" FOREIGN KEY ("brandId") REFERENCES "marcas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "produtos" ADD CONSTRAINT "produtos_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "categorias"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "produtos" ADD CONSTRAINT "produtos_category_fkey" FOREIGN KEY ("category") REFERENCES "categorias"("name") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "estoque" ADD CONSTRAINT "estoque_productId_fkey" FOREIGN KEY ("productId") REFERENCES "produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "estoque" ADD CONSTRAINT "estoque_branchOfficeId_fkey" FOREIGN KEY ("branchOfficeId") REFERENCES "filial"("branchOfficeId") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "estoque_reservado" ADD CONSTRAINT "estoque_reservado_branchOfficeId_productId_fkey" FOREIGN KEY ("branchOfficeId", "productId") REFERENCES "estoque"("branchOfficeId", "productId") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "movimento_estoque" ADD CONSTRAINT "movimento_estoque_branchOfficeId_fkey" FOREIGN KEY ("branchOfficeId") REFERENCES "filial"("branchOfficeId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "estoque_reservado" ADD CONSTRAINT "estoque_reservado_productId_fkey" FOREIGN KEY ("productId") REFERENCES "produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "movimento_estoque" ADD CONSTRAINT "movimento_estoque_productId_fkey" FOREIGN KEY ("productId") REFERENCES "produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "venda" ADD CONSTRAINT "venda_branchOfficeId_fkey" FOREIGN KEY ("branchOfficeId") REFERENCES "filial"("branchOfficeId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "venda" ADD CONSTRAINT "venda_productId_fkey" FOREIGN KEY ("productId") REFERENCES "produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "venda" ADD CONSTRAINT "venda_operationId_fkey" FOREIGN KEY ("operationId") REFERENCES "operacoes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "venda" ADD CONSTRAINT "venda_operationStatusId_fkey" FOREIGN KEY ("operationStatusId") REFERENCES "status_venda"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "venda" ADD CONSTRAINT "venda_peopleId_fkey" FOREIGN KEY ("peopleId") REFERENCES "pessoas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "pedido_compra" ADD CONSTRAINT "pedido_compra_branchOfficeId_fkey" FOREIGN KEY ("branchOfficeId") REFERENCES "filial"("branchOfficeId") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "venda" ADD CONSTRAINT "venda_physicalPersonId_fkey" FOREIGN KEY ("physicalPersonId") REFERENCES "pessoa_fisica"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "pedido_compra" ADD CONSTRAINT "pedido_compra_operationId_fkey" FOREIGN KEY ("operationId") REFERENCES "operacoes"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -392,13 +334,7 @@ ALTER TABLE "pedido_compra" ADD CONSTRAINT "pedido_compra_operationId_fkey" FORE
 ALTER TABLE "pedido_compra" ADD CONSTRAINT "pedido_compra_operationStatusId_fkey" FOREIGN KEY ("operationStatusId") REFERENCES "status_venda"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "pedido_compra" ADD CONSTRAINT "pedido_compra_peopleId_fkey" FOREIGN KEY ("peopleId") REFERENCES "pessoas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "precoVenda" ADD CONSTRAINT "precoVenda_productId_fkey" FOREIGN KEY ("productId") REFERENCES "produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "iten_Pedido_venda" ADD CONSTRAINT "iten_Pedido_venda_orderSaleId_fkey" FOREIGN KEY ("orderSaleId") REFERENCES "venda"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "iten_Pedido_venda" ADD CONSTRAINT "iten_Pedido_venda_productId_fkey" FOREIGN KEY ("productId") REFERENCES "produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "precos" ADD CONSTRAINT "precos_productId_fkey" FOREIGN KEY ("productId") REFERENCES "produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "precoCompra" ADD CONSTRAINT "precoCompra_productId_fkey" FOREIGN KEY ("productId") REFERENCES "produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
