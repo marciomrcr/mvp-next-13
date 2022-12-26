@@ -222,6 +222,81 @@ CREATE TABLE "despesas" (
     CONSTRAINT "despesas_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Marcas" (
+    "id" TEXT NOT NULL,
+    "marcaNome" TEXT NOT NULL,
+
+    CONSTRAINT "Marcas_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Categoria" (
+    "id" TEXT NOT NULL,
+    "categoriaNome" TEXT NOT NULL,
+
+    CONSTRAINT "Categoria_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Produtos" (
+    "id" TEXT NOT NULL,
+    "productName" TEXT NOT NULL,
+    "marca" TEXT NOT NULL,
+    "categoria" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Produtos_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Vendas" (
+    "id" TEXT NOT NULL,
+    "clienteId" TEXT NOT NULL,
+    "total" INTEGER NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Vendas_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "ProdutosVendas" (
+    "id" TEXT NOT NULL,
+    "vendasId" TEXT NOT NULL,
+    "produtosId" TEXT NOT NULL,
+    "qtde" INTEGER NOT NULL DEFAULT 1,
+    "preco" INTEGER NOT NULL DEFAULT 1,
+    "desconto" INTEGER NOT NULL DEFAULT 0,
+    "subTotal" INTEGER NOT NULL DEFAULT 1,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "ProdutosVendas_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PrecosVendas" (
+    "id" TEXT NOT NULL,
+    "produtosId" TEXT NOT NULL,
+    "precoVenda" INTEGER NOT NULL DEFAULT 1,
+
+    CONSTRAINT "PrecosVendas_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Estoque" (
+    "id" TEXT NOT NULL,
+    "qtde" INTEGER NOT NULL DEFAULT 1,
+    "precoCusto" INTEGER NOT NULL DEFAULT 1,
+    "produtosId" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Estoque_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "usuarios_email_key" ON "usuarios"("email");
 
@@ -306,6 +381,42 @@ CREATE UNIQUE INDEX "despesas_title_key" ON "despesas"("title");
 -- CreateIndex
 CREATE INDEX "despesas_title_idx" ON "despesas"("title");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "Marcas_marcaNome_key" ON "Marcas"("marcaNome");
+
+-- CreateIndex
+CREATE INDEX "Marcas_marcaNome_idx" ON "Marcas"("marcaNome");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Categoria_categoriaNome_key" ON "Categoria"("categoriaNome");
+
+-- CreateIndex
+CREATE INDEX "Categoria_categoriaNome_idx" ON "Categoria"("categoriaNome");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Produtos_productName_key" ON "Produtos"("productName");
+
+-- CreateIndex
+CREATE INDEX "Produtos_productName_idx" ON "Produtos"("productName");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "ProdutosVendas_produtosId_key" ON "ProdutosVendas"("produtosId");
+
+-- CreateIndex
+CREATE INDEX "ProdutosVendas_produtosId_idx" ON "ProdutosVendas"("produtosId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "PrecosVendas_produtosId_key" ON "PrecosVendas"("produtosId");
+
+-- CreateIndex
+CREATE INDEX "PrecosVendas_produtosId_idx" ON "PrecosVendas"("produtosId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Estoque_produtosId_key" ON "Estoque"("produtosId");
+
+-- CreateIndex
+CREATE INDEX "Estoque_produtosId_idx" ON "Estoque"("produtosId");
+
 -- AddForeignKey
 ALTER TABLE "produtos" ADD CONSTRAINT "produtos_brand_fkey" FOREIGN KEY ("brand") REFERENCES "marcas"("name") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -338,3 +449,18 @@ ALTER TABLE "precoVenda" ADD CONSTRAINT "precoVenda_productId_fkey" FOREIGN KEY 
 
 -- AddForeignKey
 ALTER TABLE "precoCompra" ADD CONSTRAINT "precoCompra_productId_fkey" FOREIGN KEY ("productId") REFERENCES "produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Vendas" ADD CONSTRAINT "Vendas_clienteId_fkey" FOREIGN KEY ("clienteId") REFERENCES "pessoa_fisica"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProdutosVendas" ADD CONSTRAINT "ProdutosVendas_vendasId_fkey" FOREIGN KEY ("vendasId") REFERENCES "Vendas"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "ProdutosVendas" ADD CONSTRAINT "ProdutosVendas_produtosId_fkey" FOREIGN KEY ("produtosId") REFERENCES "Produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "PrecosVendas" ADD CONSTRAINT "PrecosVendas_produtosId_fkey" FOREIGN KEY ("produtosId") REFERENCES "Produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Estoque" ADD CONSTRAINT "Estoque_produtosId_fkey" FOREIGN KEY ("produtosId") REFERENCES "Produtos"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

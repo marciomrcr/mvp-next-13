@@ -72,3 +72,15 @@ export type Venda = {
   discount?: string;
   totalPrice: string;
 };
+export type VendaNova = {
+  id?: string;
+  physicalPerson?: { name: string };
+  clienteId: string;
+  product?: { name: string }[];
+  productId: string[];
+  qtde: number[];
+  preco: number[];
+  desconto?: number[];
+  subTotal: number[];
+  total: number;
+};

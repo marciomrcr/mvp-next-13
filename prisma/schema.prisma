@@ -52,6 +52,7 @@ model PhysicalPerson {
   createdAt   DateTime    @default(now())
   updateddAt  DateTime    @updatedAt
   OrderSale   OrderSale[]
+  Vendas      Vendas[]
 
   @@index([name])
   @@map("pessoa_fisica")
@@ -277,4 +278,85 @@ model Expense {
 
   @@index([title])
   @@map("despesas")
+}
+
+model Marcas {
+  id        String @id @default(cuid())
+  marcaNome String @unique
+
+  @@index([marcaNome])
+}
+
+model Categoria {
+  id            String @id @default(cuid())
+  categoriaNome String @unique
+
+  @@index([categoriaNome])
+}
+
+model Vendas {
+  id        String   @id @default(cuid())
+  cartId    String
+  clienteId String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  cart    Cart           @relation(fields: [cartId], references: [id])
+  cliente PhysicalPerson @relation(fields: [clienteId], references: [id])
+}
+
+model Cart {
+  id         String       @id @default(cuid())
+  qtde_Items Int          @default(0)
+  total      Int          @default(0)
+  Cart_Items Cart_Items[]
+  Vendas     Vendas[]
+}
+
+model Cart_Items {
+  produtosId String
+  cartId     String
+  qtde       Int      @default(1)
+  preco      Int      @default(1)
+  desconto   Int      @default(0)
+  subTotal   Int      @default(1)
+  cart       Cart     @relation(fields: [cartId], references: [id])
+  produto    Produtos @relation(fields: [produtosId], references: [id])
+
+  @@id([produtosId, cartId])
+}
+
+model Produtos {
+  id           String         @id @default(cuid())
+  productName  String         @unique
+  marca        String
+  categoria    String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  precosVendas PrecosVendas[]
+  estoque      Estoque[]
+  Cart_Items   Cart_Items[]
+
+  @@index([productName])
+}
+
+model PrecosVendas {
+  id         String   @id @default(cuid())
+  produtosId String   @unique
+  precoVenda Int      @default(1)
+  produto    Produtos @relation(fields: [produtosId], references: [id])
+
+  @@index([produtosId])
+}
+
+model Estoque {
+  id         String   @id @default(cuid())
+  qtde       Int      @default(1)
+  precoCusto Int      @default(1)
+  produtosId String   @unique
+  produto    Produtos @relation(fields: [produtosId], references: [id])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([produtosId])
 }

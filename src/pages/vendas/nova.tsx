@@ -170,7 +170,7 @@ export default function CadastroVendas() {
                 />{' '}
               </Form.Group>
               <Form.Group className='mb-2'>
-                <Form.Label>Cor</Form.Label>
+                <Form.Label>Total</Form.Label>
                 <Form.Control
                   size='sm'
                   type='text'
