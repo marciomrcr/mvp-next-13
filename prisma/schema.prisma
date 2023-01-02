@@ -328,16 +328,18 @@ model Cart_Items {
 
 model Produtos {
   id           String         @id @default(cuid())
-  productName  String         @unique
+  produtoNome  String         @unique
   marca        String
   categoria    String
+  preco        Int            @default(1)
+  imagem       String?
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   precosVendas PrecosVendas[]
   estoque      Estoque[]
   Cart_Items   Cart_Items[]
 
-  @@index([productName])
+  @@index([produtoNome])
 }
 
 model PrecosVendas {

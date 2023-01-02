@@ -39,28 +39,34 @@ function ProdutosPage(props: Props) {
 export default ProdutosPage;
 
 export const getServerSideProps = async () => {
-  const vendas = await prisma.orderSale.findMany({
+  const vendas = await prisma.vendas.findMany({
     select: {
       id: true,
-      physicalPerson: {
+      cliente: {
         select: {
           name: true,
+          id: true,
         },
       },
-      product: {
+
+      cart: {
         select: {
-          name: true,
+          qtde_Items: true,
+          total: true,
         },
       },
-      amount: true,
-      unitPrice: true,
-      discount: true,
-      totalPrice: true,
+    },
+    orderBy: {
+      cliente: {
+        name: 'asc',
+      },
     },
   });
   console.log(vendas);
 
   return {
-    props: { vendas },
+    props: {
+      vendas,
+    },
   };
 };

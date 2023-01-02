@@ -37,6 +37,26 @@ export type Produtos = {
   price?: string;
 };
 
+export type ProdutosCart = {
+  id: string;
+  produtoNome: string;
+  marca: string;
+  categoria: string;
+  category: string;
+  preco: number;
+  imagem?: string;
+};
+
+export type EstoqueProduto = {
+  id?: string;
+  produto?: {
+    productName: string;
+  };
+  qtde: number;
+  produtosId: string;
+  precoCusto?: number;
+};
+
 export type Estoque = {
   id?: string;
   product?: {
@@ -63,24 +83,35 @@ export type ItemVenda = {
 };
 export type Venda = {
   id?: string;
-  physicalPerson?: { name: string };
-  product?: { name: string };
-  physicalPersonId: string;
+  cliente?: { name: string | undefined };
+  clienteId: string;
+  product?: { name: string | undefined };
+
+  cartId?: string;
+  Cart_Items?: {
+    desconto: number;
+  };
+  cart?: {
+    qtde_Items: number;
+    total: number;
+  };
   productId: string;
-  amount: string;
-  unitPrice: string;
-  discount?: string;
-  totalPrice: string;
+  qtde: number;
+  preco: number;
+  desconto: number;
+  subTotal: number;
 };
-export type VendaNova = {
+export type VendaCart = {
   id?: string;
   physicalPerson?: { name: string };
   clienteId: string;
-  product?: { name: string }[];
-  productId: string[];
-  qtde: number[];
-  preco: number[];
-  desconto?: number[];
-  subTotal: number[];
+  product?: { name: string };
+  cartId?: string;
+  productId: string;
+  qtde: number;
+  preco: number;
+  desconto: number;
+  subTotal: number;
+  qtde_Items: number;
   total: number;
 };

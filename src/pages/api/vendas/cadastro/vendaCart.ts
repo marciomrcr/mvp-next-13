@@ -42,6 +42,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
             },
           },
         });
+        console.log(vendas);
         res.status(200).json(vendas);
       } catch (error: any) {
         return res.json({ message: 'Venda não encontrada' });
